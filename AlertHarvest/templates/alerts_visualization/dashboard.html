@@ -1,0 +1,285 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item text-sm text-dark active" aria-current="page">Alerts Dashboard</li>
+{% endblock breadcrumb %}
+
+{% block ExtraTopBar %}
+<div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
+    <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+      <div class="input-group input-group-outline">
+        <label class="form-label">Search Alerts ...</label>
+        <input type="text" class="form-control" id="searchInput">
+      </div>
+</div>
+<li class="nav-item ps-3 d-flex align-items-center text-sm">
+        Refresh Page:
+</li>
+<li class="nav-item ps-3 d-flex align-items-center">
+    <select class="text-dark text-muted text-sm" id="refreshIntervalDropdown">
+        <option value="1">1 minute</option>
+        <option value="5">5 minutes</option>
+        <option value="30">30 minutes</option>
+        <option value="60">1 hour</option>
+        <option value="0">Never</option>
+    </select>
+</li>
+
+{% endblock ExtraTopBar %}
+
+
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Alert count cards-->
+    <div class="row">
+        <div class="col-lg-12 position-relative z-index-2">
+            <div class="row justify-content-center">  
+                <div class="col-lg-2 col-sm-6">
+                    <div class="card  mb-2">
+                        <div class="card-header p-3 pt-2">
+                            <div class="icon icon-lg icon-shape bg-gradient-danger shadow-dark shadow text-center border-radius-xl mt-n4 position-absolute">
+                                <i class="material-icons opacity-10">local_fire_department</i>
+                            </div>
+                            <div class="text-end pt-1">
+                                <p class="font-weight-bold text-sm mb-0 text-capitalize text-danger">CRITICAL</p>
+                                <h1 class="mb-0 text-danger">{{critical_count}}</h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-sm-6">
+                    <div class="card  mb-2">
+                        <div class="card-header p-3 pt-2">
+                            <div class="icon icon-lg icon-shape bg-gradient-primary shadow-dark shadow text-center border-radius-xl mt-n4 position-absolute">
+                                <i class="material-icons opacity-10">bolt</i>
+                            </div>
+                            <div class="text-end pt-1">
+                                <p class="font-weight-bold text-sm mb-0 text-capitalize text-primary">MAJOR</p>
+                                <h1 class="mb-0 text-primary">{{major_count}}</h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-2 col-sm-6">
+                    <div class="card  mb-2">
+                        <div class="card-header p-3 pt-2">
+                            <div class="icon icon-lg icon-shape bg-gradient-warning shadow-dark shadow text-center border-radius-xl mt-n4 position-absolute">
+                                <i class="material-icons opacity-10">emergency</i>
+                            </div>
+                            <div class="text-end pt-1">
+                                <p class="font-weight-bold text-sm mb-0 text-capitalize text-warning">WARNING</p>
+                                <h1 class="mb-0 text-warning">{{warning_count}}</h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-2 col-sm-6">
+                    <div class="card  mb-2">
+                        <div class="card-header p-3 pt-2">
+                            <div class="icon icon-lg icon-shape bg-gradient-info shadow-dark shadow text-center border-radius-xl mt-n4 position-absolute">
+                                {% comment %} <i class="material-icons opacity-10">check_circle</i> {% endcomment %}
+                                <i class="text-white fas fa-check-double"></i>
+                            </div>
+                            <div class="text-end pt-1">
+                                <p class="font-weight-bold text-sm mb-0 text-capitalize text-info">ACKED</p>
+                                <h1 class="mb-0 text-info">{{acknowledged_count}}</h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-2 col-sm-6">
+                    <div class="card  mb-2">
+                        <div class="card-header p-3 pt-2">
+                            <div class="icon icon-lg icon-shape bg-gradient-secondary shadow-dark shadow text-center border-radius-xl mt-n4 position-absolute">
+                                <i class="material-icons opacity-10">hourglass_bottom</i>
+                            </div>
+                            <div class="text-end pt-1">
+                                <p class="font-weight-bold text-sm mb-0 text-capitalize text-dark">EXPIRED</p>
+                                <h1 class="mb-0 text-dark">{{expired_count}}</h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>  
+    </div>
+</div>
+
+<!-- Table of alerts-->
+<div class="container-fluid py-4">
+    <div class="row">
+      {% comment %} <div class="col-12">
+        <div class="row mx-0 mb-3">
+            <div class="col-lg-2 offset-lg-10">
+                <div class="input-group input-group-outline mb-3">
+                    <input type="text" id="searchInput" class="form-control rounded-end border-dark" placeholder="Search all alerts...">
+                </div>
+            </div>
+        </div> {% endcomment %}
+        <div class="card my-4">
+          <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+            <div class="bg-dark border-radius-lg pt-4 pb-3">
+              <h6 class="text-white text-capitalize ps-3">Alerts</h6>
+            </div>
+          </div>
+          <div class="card-body px-0 pb-2">
+            <div class="table-responsive p-0">
+                <div id="bulkActionButtons" class="d-none mx-3 mb-3">
+                    <button class="btn btn-outline-info me-2" onclick="acknowledgeSelectedAlerts()">
+                        <i class="material-icons">checklist</i> Acknowledge selection
+                    </button>
+                    <button class="btn btn-outline-primary me-2" onclick="closeSelectedAlerts()">
+                        <i class="material-icons">inventory_2</i> Archive selection
+                    </button>
+                </div>
+              <table class="table align-items-center mb-0 table-hover">
+                <thead>
+                  <tr>
+                     <!-- Add a new th for the checkbox -->
+                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                        <input type="checkbox" id="selectAllCheckbox">
+                    </th>
+                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Severity</th>
+                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
+                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Location</th>
+                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Source</th>
+                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Message</th>
+                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Last Occurrence</th>
+                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Acknowledge</th>
+                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Archive</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for alert in alerts %}
+                  <tr class="alert-row" data-alert-id="{{ alert.id }}">
+                    <td class="align-middle text-center text-xxs">
+                        <input name="checkbox-alert" type="checkbox" class="alert-checkbox" data-alert-id="{{ alert.id }}">
+                    </td>
+                    <td class="align-middle text-dark text-center text-sm">
+                      {% if "ACKNOWLEDGED" in alert.status %}
+                      <span class="badge badge-sm bg-gradient-info">{{ alert.severity }}</span>
+                      {% elif "EXPIRED" in alert.status %}
+                      <span class="badge badge-sm bg-gradient-dark">{{ alert.severity }}</span>
+                      {% elif "CRITICAL" in alert.severity %}
+                      <span class="badge badge-sm bg-gradient-danger">{{ alert.severity }}</span>
+                      {% elif "MAJOR" in alert.severity %}
+                      <span class="badge badge-sm bg-gradient-primary">{{ alert.severity }}</span>
+                      {% elif "WARNING" in alert.severity %}
+                      <span class="badge badge-sm bg-gradient-warning">{{ alert.severity }}</span>
+                      {% endif %}
+                    </td>
+                    <td class="align-middle text-center text-sm">
+                            {% if "OPEN" in alert.status %}
+                                <i class="fa-solid fa-tower-broadcast 
+                                {% if "CRITICAL" in alert.severity %}
+                                text-danger
+                                {% elif "MAJOR" in alert.severity %}
+                                text-primary
+                                {% elif "WARNING" in alert.severity %}
+                                text-warning
+                                {% endif %}
+                                "></i>
+                            {% elif "ACKNOWLEDGED" in alert.status %}
+                                <i class="text-info fas fa-check-double"></i>
+                            {% else %}
+                                <i class="text-dark fas fa-hourglass-end"></i>
+                            {% endif %}
+                    </td>
+                    <td class="align-middle text-dark text-center text-sm">
+                      <p class="text-sm font-weight-bold mb-0">{{ alert.location }}</p>
+                    </td>
+                    <td class="align-middle text-dark text-center text-sm">
+                      <p class="text-sm font-weight-bold mb-0">{{ alert.source }}</p>
+                    </td>
+
+                    <td class="align-middle text-center text-sm">
+                        <a class="text-dark" href="{% url 'viz:alert_details' alert.id %}">
+                            <p class="text-sm font-weight-bold mb-0">{{ alert.message|truncatechars:100 }}</p>
+                        </a>
+                    </td>
+                    <td class="align-middle text-dark text-center text-sm">
+                      <p class="text-sm font-weight-bold mb-0">{{ alert.last_occurrence }}</p>
+                    </td>
+                    <td class="align-middle text-center text-sm">
+                        <button class=
+                            {% if "ACKNOWLEDGED" in alert.status %}
+                            "btn btn-info"
+                            {% elif "EXPIRED" in alert.status %}
+                            "btn btn-dark" disabled
+                            {% elif "CRITICAL" in alert.severity %}
+                            "btn btn-danger"
+                            {% elif "MAJOR" in alert.severity %}
+                            "btn btn-primary"
+                            {% elif "WARNING" in alert.severity %}
+                            "btn btn-warning"
+                           {% endif %}
+                           {% if "ACKNOWLEDGED" in alert.status %}
+                           onclick="unacknowledgeAlert({{ alert.id }})"
+                           {% else %}
+                           onclick="acknowledgeAlert({{ alert.id }})"
+                           {% endif %}
+                        >
+                        <i class="material-icons">
+                            {% if "ACKNOWLEDGED" in alert.status %}
+                                replay
+                            {% else %}
+                                done
+                            {% endif %}
+                        </i>
+                        <span class="sr-only">
+                            {% if "ACKNOWLEDGED" in alert.status %}
+                            Unack
+                            {% else %}
+                            Ack
+                            {% endif %}
+                        </span>
+                        </button>
+                    </td>
+                    <td class="align-middle text-center text-sm">
+                        <button class=
+                            {% if "ACKNOWLEDGED" in alert.status %}
+                            "btn btn-info"
+                            {% elif "EXPIRED" in alert.status %}
+                            "btn btn-dark"
+                            {% elif "CRITICAL" in alert.severity %}
+                            "btn btn-danger"
+                            {% elif "MAJOR" in alert.severity %}
+                            "btn btn-primary"
+                            {% elif "WARNING" in alert.severity %}
+                            "btn btn-warning"
+                           {% endif %}
+                           onclick="archiveAlert({{ alert.id }})"
+                        >
+                        <i class="material-icons">archive</i>
+                        <span class="sr-only">Archive</span>
+                        </button>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          {% if expired_count %}
+          <div class="d-flex justify-content-end mb-3">
+              <button class="btn btn-outline-dark me-2" onclick="archiveAllExpiredAlert()">
+                  <i class="material-icons">delete_sweep</i> Archive all expired
+              </button>
+          </div>
+      {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block extrascripts %}
+<!-- Include the custom.js file -->
+<script src="{% static 'js/dashboard.js' %}"></script>
+{% endblock extrascripts %}

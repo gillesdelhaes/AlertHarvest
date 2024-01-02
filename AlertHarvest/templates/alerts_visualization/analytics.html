@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item text-sm text-dark active" aria-current="page">Alerts Analytics</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+<!-- Charts-->
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-lg-12 mt-4 mb-4">
+      <div class="card z-index-2 ">
+        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+          <div class=" bg-white shadow-dark border-radius-lg py-3 pe-1">
+            <div class="chart">
+              <canvas id="barchart-30days" class="chart-canvas" height="170"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <h6 class="mb-0 ">Created last 30 days</h6>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block extrascripts %}
+<!-- Script for Bar Chart -->
+<script>
+  // Get the labels and data from your Django template
+  var labels = {{ thirtyday_chart_labels | safe }};
+  var data = {{ thirtyday_chart_data | safe }};
+
+  // Create the bar chart
+  var ctx = document.getElementById('barchart-30days').getContext('2d');
+  var myChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+          labels: labels,
+          datasets: [{
+              label: 'Daily Counts',
+              data: data,
+              backgroundColor: '#344767',
+              borderWidth: 0,
+              borderRadius: 4,
+              fill: false,
+          }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false,
+          }
+        },
+        scales: {
+          y: {
+            grid: {
+              drawBorder: false,
+              display: true,
+              drawOnChartArea: true,
+              drawTicks: false,
+              borderDash: [5, 5]
+            },
+            ticks: {
+              display: true,
+              padding: 10,
+              color: '#344767',
+              stepSize: 1,
+            }
+          },
+          x: {
+            grid: {
+              drawBorder: false,
+              display: false,
+              drawOnChartArea: true,
+              drawTicks: true,
+            },
+            ticks: {
+              display: true,
+              color: '#344767',
+              padding: 10,
+              font: {
+                style: 'bold',
+              }
+            }
+          },
+        },
+      },
+    });
+</script>
+{% endblock extrascripts %}

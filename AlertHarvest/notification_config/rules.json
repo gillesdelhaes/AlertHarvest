@@ -1,0 +1,51 @@
+[
+    {
+        "source": "Any",
+        "location": "Demo",
+        "severity": "Any",
+        "targets": ["discord"]
+      },
+    {
+      "source": "System",
+      "location": "Server Room",
+      "severity": "CRITICAL",
+      "targets": ["email", "slack"]
+    },
+    {
+      "source": "Application",
+      "location": "Production",
+      "severity": "WARNING",
+      "targets": ["discord"]
+    },
+    {
+      "source": "Network",
+      "location": "Data Center",
+      "severity": "CRITICAL",
+      "targets": ["email", "slack"]
+    },
+    {
+      "source": "Database",
+      "location": "Backup Server",
+      "severity": "MAJOR",
+      "targets": ["discord", "slack"]
+    },
+    {
+      "source": "Application",
+      "location": "Testing",
+      "severity": "MAJOR",
+      "targets": ["email"]
+    },
+    {
+        "source": "Any",
+        "location": "Testing",
+        "severity": "Any",
+        "targets": ["email","slack","discord","flyingpigeon"]
+      },
+    {
+      "source": "Any",
+      "location": "Any",
+      "severity": "Any",
+      "targets": ["email"]
+    }
+  ]
+  
