@@ -71,6 +71,7 @@ def alerts_dashboard(request):
 def alerts_analytics(request):
     #Refresh expired flag for all alerts
     update_expired_status()
+    #### 30 Days Chart Section #####
     # Calculate the date 30 days ago from today
     thirty_days_ago = timezone.now() - timedelta(days=30)
 
@@ -88,10 +89,59 @@ def alerts_analytics(request):
     thirtyday_chart_labels_formatted = [date_obj.strftime('%Y-%m-%d') for date_obj in thirtyday_chart_labels]
     thirtyday_chart_data = [entry['new_tickets_count'] for entry in new_tickets_per_day]
     
-    #Created context dict
-    context = { 'thirtyday_chart_labels': thirtyday_chart_labels_formatted,
-                'thirtyday_chart_data':thirtyday_chart_data
-                }
+    #### Severity doughnut chart section ####
+    # Count open alerts per severity
+    open_alerts_by_severity = (
+        Alert.objects.filter(status='OPEN')
+        .values('severity')
+        .annotate(open_alerts_count=Count('id'))
+        .order_by('severity')
+    )
+
+    # Extract counts and severity labels for doughnut chart data
+    severity_chart_labels = [entry['severity'] for entry in open_alerts_by_severity]
+    severity_chart_data = [entry['open_alerts_count'] for entry in open_alerts_by_severity]
+
+    
+    ### Source doughnut section ###
+    # Count new alerts per source for the past 30 days
+    alerts_by_source = (
+        Alert.objects.filter(timestamp__gte=thirty_days_ago)
+        .values('source')
+        .annotate(alerts_count=Count('id'))
+        .order_by('-alerts_count')  # Order by count in descending order
+    )
+
+    # Extract counts and source labels for doughnut chart data
+    source_chart_labels = [entry['source'] for entry in alerts_by_source]
+    source_chart_data = [entry['alerts_count'] for entry in alerts_by_source]
+
+
+    ### Location bar section ####
+    # Count alarms per location for the past 30 days
+    alarms_by_location = (
+        Alert.objects.filter(timestamp__gte=thirty_days_ago)
+        .values('location')
+        .annotate(alarms_count=Count('id'))
+        .order_by('alarms_count')  # Order by count in ascending order
+    )
+
+    # Extract counts and location labels for horizontal bar chart data
+    location_chart_labels = [entry['location'] for entry in alarms_by_location]
+    location_chart_data = [entry['alarms_count'] for entry in alarms_by_location]
+
+    # Created context dict
+    context = {
+        'thirtyday_chart_labels': thirtyday_chart_labels_formatted,
+        'thirtyday_chart_data': thirtyday_chart_data,
+        'severity_chart_labels': severity_chart_labels,
+        'severity_chart_data': severity_chart_data,
+        'source_chart_labels': source_chart_labels,
+        'source_chart_data': source_chart_data,
+        'location_chart_labels': location_chart_labels,
+        'location_chart_data': location_chart_data,
+    }
+    
     return render(request, 'alerts_visualization/analytics.html', context)
 
 def alert_details(request, pk):
