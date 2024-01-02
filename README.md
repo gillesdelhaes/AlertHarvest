@@ -25,4 +25,8 @@ Rules are executed from top to bottom of the file
 Create modules following example.
 Discord module active and running.
 
+Default Django credentials:
+admin
+Welcome2Harvest
+
 If you need more info or want to contribute https://discord.gg/hduVhv7VaA
