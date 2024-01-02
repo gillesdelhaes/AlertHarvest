@@ -21,6 +21,7 @@ json body example
 }
 
 For notifications, create rules following examples.
+Rules are executed from top to bottom of the file
 Create modules following example.
 Discord module active and running.
 
