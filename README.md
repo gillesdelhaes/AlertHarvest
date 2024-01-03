@@ -1,7 +1,7 @@
 # Alert Harvest
 
 A new way of aggregating and dispatching monitoring alerts.
-From any source to any target with an eat single pane of glass in the middle.
+From any source to any target with a neat single pane of glass in the middle.
 
 ## Support and contribute
 
