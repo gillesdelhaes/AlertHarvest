@@ -3,6 +3,10 @@
 A new way of aggregating and dispatching monitoring alerts.
 From any source to any target with an eat single pane of glass in the middle.
 
+## Support and contribute
+
+For support and contribution join our [discord](https://discord.gg/hduVhv7VaA)
+
 ## Tech Stack
 
 **Backend**
@@ -16,7 +20,7 @@ From any source to any target with an eat single pane of glass in the middle.
 - ![JavaScript](https://img.shields.io/badge/JavaScript-yellow?logo=javascript)
 
 **Automation**
-- ![Docker](https://img.shields.io/badge/Docker-20.10.10-blue?logo=docker)
+- ![Docker](https://img.shields.io/badge/Docker-blue?logo=docker)
 
 ## Deployment
 
@@ -36,9 +40,7 @@ Default Django admin credentials:
 
 ### Create Alert
 
-```http
-  POST /api/create_alert/
-```
+`POST /api/create_alert/`
 
 | Parameter    | Type     | Description                               |
 | :----------- | :------- | :---------------------------------------- |
@@ -66,9 +68,7 @@ Default Django admin credentials:
 
 ### Close Alert
 
-```http
-  PUT /api/close_alert/${alert_id}
-```
+`PUT /api/close_alert/${alert_id}`
 
 | Parameter   | Type     | Description                       |
 | :---------- | :------- | :-------------------------------- |
@@ -92,9 +92,7 @@ Default Django admin credentials:
 
 ### Close Alerts in Bulk
 
-```http
-  PUT /api/close_alerts_bulk/
-```
+`PUT /api/close_alerts_bulk/`
 
 | Parameter      | Type       | Description                                     |
 | :------------- | :--------- | :---------------------------------------------- |
@@ -126,9 +124,7 @@ Default Django admin credentials:
 
 ### Close Expired Alerts
 
-```http
-  PUT /api/close_expired_alerts/
-```
+`PUT /api/close_expired_alerts/`
 
 #### Response
 
@@ -154,9 +150,7 @@ Default Django admin credentials:
 
 ### Acknowledge Alert
 
-```http
-  PUT /api/acknowledge_alert/${alert_id}
-```
+`PUT /api/acknowledge_alert/${alert_id}`
 
 | Parameter   | Type     | Description                           |
 | :---------- | :------- | :------------------------------------ |
@@ -180,9 +174,7 @@ Default Django admin credentials:
 
 ### Acknowledge Alerts in Bulk
 
-```http
-  PUT /api/acknowledge_alerts_bulk/
-```
+`PUT /api/acknowledge_alerts_bulk/`
 
 | Parameter      | Type       | Description                                           |
 | :------------- | :--------- | :---------------------------------------------------- |
@@ -214,9 +206,7 @@ Default Django admin credentials:
 
 ### Unacknowledge Alert
 
-```http
-  PUT /api/unacknowledge_alert/${alert_id}
-```
+`PUT /api/unacknowledge_alert/${alert_id}`
 
 | Parameter   | Type     | Description                             |
 | :---------- | :------- | :-------------------------------------- |
@@ -241,8 +231,4 @@ Default Django admin credentials:
 To be detailed with examples but for now creates rules following the exampel in rules.json
 Create modules following example.
 Discord module is active and running.
-
-## Support and contribute
-
-For support and contribution join our [discord](https://discord.gg/hduVhv7VaA)
 
