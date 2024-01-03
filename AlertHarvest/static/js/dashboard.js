@@ -1,89 +1,71 @@
 function acknowledgeAlert(alertId) {
-    // Prepare the data to be sent in the request body
-    var requestData = {
-    alert_id: alertId
-    };
-
     // Send a PUT request using jQuery Ajax
     $.ajax({
-    type: 'PUT',
-    url: '/api/acknowledge_alert/',
-    contentType: 'application/json',
-    data: JSON.stringify(requestData),
-    success: function (response) {
-        // Handle success response
-        console.log(response);
-        // Optionally update the UI or perform other actions on success
+        type: 'PUT',
+        url: '/api/acknowledge_alert/' + alertId + '/',  // Include alertId in the URL
+        contentType: 'application/json',
+        success: function (response) {
+            // Handle success response
+            console.log(response);
+            // Optionally update the UI or perform other actions on success
 
-        // Refresh the page after a short delay (e.g., 500 milliseconds)
-        setTimeout(function () {
-        location.reload();
-        }, 500);
-    },
-    error: function (error) {
-        // Handle error response
-        console.error(error);
-        // Optionally show an error message or perform other actions on error
-    }
+            // Refresh the page after a short delay (e.g., 500 milliseconds)
+            setTimeout(function () {
+                location.reload();
+            }, 500);
+        },
+        error: function (error) {
+            // Handle error response
+            console.error(error);
+            // Optionally show an error message or perform other actions on error
+        }
     });
 }
 
 function unacknowledgeAlert(alertId) {
-    // Prepare the data to be sent in the request body
-    var requestData = {
-        alert_id: alertId
-    };
-
     // Send a PUT request using jQuery Ajax
     $.ajax({
         type: 'PUT',
-        url: '/api/unacknowledge_alert/',
+        url: '/api/unacknowledge_alert/' + alertId + '/',  // Include alertId in the URL
         contentType: 'application/json',
-        data: JSON.stringify(requestData),
         success: function (response) {
-        // Handle success response
-        console.log(response);
-        // Optionally update the UI or perform other actions on success
+            // Handle success response
+            console.log(response);
+            // Optionally update the UI or perform other actions on success
 
-        // Refresh the page after a short delay (e.g., 500 milliseconds)
-        setTimeout(function () {
-            location.reload();
-        }, 500);
+            // Refresh the page after a short delay (e.g., 500 milliseconds)
+            setTimeout(function () {
+                location.reload();
+            }, 500);
         },
         error: function (error) {
-        // Handle error response
-        console.error(error);
-        // Optionally show an error message or perform other actions on error
+            // Handle error response
+            console.error(error);
+            // Optionally show an error message or perform other actions on error
         }
     });
 }
 
 function archiveAlert(alertId) {
-    // Prepare the data to be sent in the request body
-    var requestData = {
-        alert_id: alertId
-    };
-
     // Send a PUT request using jQuery Ajax
     $.ajax({
         type: 'PUT',
-        url: '/api/close_alert/',
+        url: '/api/close_alert/' + alertId + '/',  // Include alertId in the URL
         contentType: 'application/json',
-        data: JSON.stringify(requestData),
         success: function (response) {
-        // Handle success response
-        console.log(response);
-        // Optionally update the UI or perform other actions on success
+            // Handle success response
+            console.log(response);
+            // Optionally update the UI or perform other actions on success
 
-        // Refresh the page after a short delay (e.g., 500 milliseconds)
-        setTimeout(function () {
-            location.reload();
-        }, 500);
+            // Refresh the page after a short delay (e.g., 500 milliseconds)
+            setTimeout(function () {
+                location.reload();
+            }, 500);
         },
         error: function (error) {
-        // Handle error response
-        console.error(error);
-        // Optionally show an error message or perform other actions on error
+            // Handle error response
+            console.error(error);
+            // Optionally show an error message or perform other actions on error
         }
     });
 }

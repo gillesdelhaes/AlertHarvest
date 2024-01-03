@@ -46,44 +46,9 @@ def create_alert(request):
         return JsonResponse({"status": "error", "message": str(e)}, status=500)
 
 @csrf_exempt
-@require_http_methods(["DELETE"])
-def delete_alert(request):
-    #alert_id = request.POST.get('alert_id', None)
-    try:
-        data = json.loads(request.body)
-        alert_id = data.get('alert_id', None)
-        alert = Alert.objects.get(id=alert_id)
-        alert.delete()
-        return JsonResponse({'status': 'success', 'message': 'Alert deleted successfully'})
-    except Alert.DoesNotExist:
-        return JsonResponse({'status': 'error', 'message': 'Alert not found'}, status=404)
-    except Exception as e:
-        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
-
-@csrf_exempt
-@require_http_methods(["DELETE"])
-def delete_expired_alerts(request):
-    try:
-        # Perform the operation to delete expired alerts
-        deleted_count, _ = Alert.objects.filter(expired=True).delete()
-
-        if deleted_count > 0:
-            # Return success response
-            return JsonResponse({'status': 'success', 'message': 'Expired alerts deleted successfully'})
-        else:
-            # Return a response indicating that no expired alerts were found
-            return JsonResponse({'status': 'success', 'message': 'No expired alerts found'})
-    except Exception as e:
-        # Return an error response with details
-        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
-
-@csrf_exempt
 @require_http_methods(["PUT"])
-def close_alert(request):
-    # alert_id = request.PUT.get('alert_id', None)
+def close_alert(request, alert_id):
     try:
-        data = json.loads(request.body)
-        alert_id = data.get('alert_id', None)
         alert = get_object_or_404(Alert, id=alert_id)
         alert.update_status('CLOSED')
         # Return success response
@@ -133,13 +98,8 @@ def close_expired_alerts(request):
 
 @csrf_exempt
 @require_http_methods(["PUT"])
-def acknowledge_alert(request):
-    # alert_id = request.PUT.get('alert_id', None)
-
+def acknowledge_alert(request, alert_id):
     try:
-        data = json.loads(request.body)
-        alert_id = data.get('alert_id', None)
-        
         alert = get_object_or_404(Alert, id=alert_id)
         alert.update_status('ACKNOWLEDGED')
         alert.acknowledged_at = datetime.now()
@@ -174,12 +134,8 @@ def acknowledge_alerts_bulk(request):
 
 @csrf_exempt
 @require_http_methods(["PUT"])
-def unacknowledge_alert(request):
-    # alert_id = request.PUT.get('alert_id', None)
-
+def unacknowledge_alert(request, alert_id):
     try:
-        data = json.loads(request.body)
-        alert_id = data.get('alert_id', None)
         alert = get_object_or_404(Alert, id=alert_id)
         alert.update_status('OPEN')
         alert.acknowledged_at = None
