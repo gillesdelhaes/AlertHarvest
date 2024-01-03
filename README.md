@@ -31,6 +31,8 @@ To deploy this project run
 ```
 Once the deployment is successful, you can access the dashboard at [http://127.0.0.1:8000/viz/dashboard/](http://127.0.0.1:8000/viz/dashboard/).
 
+Django authentication system is activated. 
+
 Default Django admin credentials:
 
 - Username: admin

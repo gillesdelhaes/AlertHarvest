@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.db.models.functions import TruncDate
 from alerts_api.models import Alert
 from datetime import datetime, timedelta
+from django.contrib.auth.decorators import login_required
 
 def update_expired_status():
     now = datetime.now()
@@ -16,7 +17,7 @@ def update_expired_status():
     Alert.objects.filter(last_occurrence__gt=expiration_time, status='EXPIRED').update(status='OPEN')
 
 # Create your views here.
-
+@login_required
 def alerts_dashboard(request):
     #Refresh expired flag for all alerts
     update_expired_status()
@@ -68,6 +69,7 @@ def alerts_dashboard(request):
                 }
     return render(request, 'alerts_visualization/dashboard.html', context)
 
+@login_required
 def alerts_analytics(request):
     #Refresh expired flag for all alerts
     update_expired_status()
@@ -144,6 +146,7 @@ def alerts_analytics(request):
     
     return render(request, 'alerts_visualization/analytics.html', context)
 
+@login_required
 def alert_details(request, pk):
     #Refresh expired flag for all alerts
     update_expired_status()

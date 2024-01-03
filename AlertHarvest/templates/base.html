@@ -13,7 +13,6 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 -->
 
-
 <!DOCTYPE html>
 <html lang="en">
   {% load static %}
@@ -88,39 +87,15 @@
               <span class="nav-link-text ms-1">Data Admin</span>
             </a>
           </li>
-
-          {% comment %} <hr class="horizontal light mt-0 mb-2">
-          <li class="nav-item dropdown ">
-            <a href="javascript:;" class="nav-link text-white" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="material-icons">person</i>
-              <span class="d-sm-inline d-none">{{ user.first_name}} {{ user.last_name}}</span>
-            </a>
-            <ul class="dropdown-menu  dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-              <li class="mb-2">
-                <a class="dropdown-item border-radius-md" href="{% url 'login:password_change' %}">
-                  <div class="d-flex py-1">
-                    <div class="d-flex flex-column justify-content-center">
-                      <h6 class="text-sm font-weight-normal mb-1">
-                        <span class="font-weight-bold">Change Password</span>
-                      </h6>
-                    </div>
-                  </div>
-                </a>
-              </li>
-              <li class="mb-2">
-                <a class="dropdown-item border-radius-md" href="{% url 'login:logout' %}">
-                  <div class="d-flex py-1">
-                    <div class="d-flex flex-column justify-content-center">
-                      <h6 class="text-sm font-weight-normal mb-1">
-                        <span class="font-weight-bold">Sign out</span>
-                      </h6>
-                    </div>
-                  </div>
-                </a>
-              </li>
-            </ul>
-          </li> {% endcomment %}
         </ul>
+        <div class="sidenav-footer position-absolute w-100 bottom-0">
+          <div class="mx-3">
+              <form method="post" action="{% url 'viz:logout' %}">
+                  {% csrf_token %}
+                  <button class="btn btn-outline-danger mt-4 w-100" type="submit">Logout</button>
+              </form>
+          </div>
+        </div>
       </div>
     </aside>
 
@@ -134,8 +109,6 @@
                   <i class="material-icons opacity-3">house</i>
               </li>
               {% block breadcrumb %}
-                {% comment %} <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a></li>
-                <li class="breadcrumb-item text-sm text-dark active" aria-current="page">New User</li> {% endcomment %}
               {% endblock breadcrumb %}
             </ol>
           </nav>

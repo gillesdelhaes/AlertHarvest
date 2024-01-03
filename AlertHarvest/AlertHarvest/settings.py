@@ -139,3 +139,7 @@ CELERY_IMPORTS = ('alerts_notificator.tasks',)  # Update with the path to your a
 
 # Activate Notifications
 NOTIFICATION_ENABLED = True
+
+#Login Engine
+LOGIN_URL = '/viz/login/'
+LOGIN_REDIRECT_URL = '/viz/dashboard/'
