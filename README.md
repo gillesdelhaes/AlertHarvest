@@ -36,6 +36,11 @@ Default Django admin credentials:
 - Username: admin
 - Password: Welcome2Harvest
 
+## Screenshots
+![Dashboard](docs/screenshots/dashboard.png)
+
+![Analytics](docs/screenshots/analytics.png)
+
 ## API Reference
 
 ### Create Alert
