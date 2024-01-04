@@ -1,2 +1,3 @@
 __pycache__/
 *.pyc
+AlertHarvest/static/admin/*

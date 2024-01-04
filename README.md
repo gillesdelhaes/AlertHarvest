@@ -14,6 +14,8 @@ For support and contribution join our [discord](https://discord.gg/hduVhv7VaA)
 - ![Python](https://img.shields.io/badge/Python-3.12-blue?logo=python)
 - ![Redis](https://img.shields.io/badge/Redis-7.3.2-red?logo=redis)
 - ![Celery](https://img.shields.io/badge/Celery-5.3.6-blue?logo=celery)
+- ![Nginx](https://img.shields.io/badge/Nginx-1.24.0-green?logo=nginx)
+- ![Gunicorn](https://img.shields.io/badge/Gunicorn-21.2.0-yellow?logo=gunicorn)
 
 **Frontend**
 - ![Bootstrap](https://img.shields.io/badge/Bootstrap-5.0-blueviolet?logo=bootstrap)
@@ -24,19 +26,22 @@ For support and contribution join our [discord](https://discord.gg/hduVhv7VaA)
 
 ## Deployment
 
-To deploy this project run
+To deploy the project
 
 ```bash
-  docker compose up -d
+  docker-compose -f docker-compose.prod.yml up -d
 ```
-Once the deployment is successful, you can access the dashboard at [http://127.0.0.1:8000/viz/dashboard/](http://127.0.0.1:8000/viz/dashboard/).
+
+To deploy this project using django's built-in web server (DEV ONLY)
+
+```bash
+  docker-compose -f docker-compose.dev.yml up -d
+```
+Once the deployment is successful, you can access the dashboard at [http://127.0.0.1:8000/viz/login/](http://127.0.0.1:8000/viz/login/) for dev and without :8000 for prod.
 
 Django authentication system is activated. 
 
-Default Django admin credentials:
-
-- Username: admin
-- Password: Welcome2Harvest
+Credentials can be found in respective .env files.
 
 ## Screenshots
 ![Dashboard](docs/screenshots/dashboard.png)

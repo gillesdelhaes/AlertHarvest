@@ -3,8 +3,10 @@ services:
   django:
     build:
       context: ./AlertHarvest
-      dockerfile: Dockerfile
-    image: alertharvest:latest
+      dockerfile: Dockerfile.dev
+    image: alertharvest-dev:latest
+    env_file:
+      - .env.dev
     ports:
       - 8000:8000
     volumes:
