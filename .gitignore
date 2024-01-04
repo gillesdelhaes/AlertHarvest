@@ -1,3 +1,4 @@
 __pycache__/
 *.pyc
 AlertHarvest/static/admin/*
+AlertHarvest/db.sqlite3
