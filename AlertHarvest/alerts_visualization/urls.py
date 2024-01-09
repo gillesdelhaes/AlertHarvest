@@ -7,5 +7,6 @@ urlpatterns = [
     path("analytics/", views.alerts_analytics, name="alerts_analytics"),
     path('display/<int:pk>/', views.alert_details, name = "alert_details"),
     path("login/", auth_views.LoginView.as_view(template_name="accounts/login.html"),name='login'),
-    path("logout/", auth_views.LogoutView.as_view(next_page='/viz/login/'), name="logout")
+    path("logout/", auth_views.LogoutView.as_view(next_page='/viz/login/'), name="logout"),
+    path('autosave_notes/', views.auto_save_notes, name='auto_save_notes'),
 ]

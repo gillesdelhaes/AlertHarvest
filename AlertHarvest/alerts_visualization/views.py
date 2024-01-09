@@ -5,6 +5,10 @@ from django.db.models.functions import TruncDate
 from alerts_api.models import Alert
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+import json
 
 def update_expired_status():
     now = datetime.now()
@@ -158,3 +162,22 @@ def alert_details(request, pk):
 
     # Render the template with the context
     return render(request, 'alerts_visualization/alert_details.html', context)
+
+@require_POST
+@csrf_exempt
+def auto_save_notes(request):
+    data = json.loads(request.body.decode('utf-8'))
+    alert_id = data.get('alert_id')
+    notes = data.get('notes')
+
+    try:
+        # Retrieve the Alert instance
+        alert = Alert.objects.get(id=alert_id)
+
+        # Update the notes field
+        alert.notes = notes
+        alert.save()
+
+        return JsonResponse({'status': 'success', 'message': 'Auto-save successful'})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)

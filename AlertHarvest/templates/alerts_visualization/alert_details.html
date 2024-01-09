@@ -7,7 +7,7 @@
 
 {% block content %}
     <div class="row justify-content-center">
-      <div class="col-lg-10 mx-auto">
+      <div class="col-lg-8 mx-auto">
         <div class="card my-4">
           <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
             <div class="border-radius-lg pt-4 pb-3
@@ -31,68 +31,78 @@
             </div>
           </div>
           <div class="card-body px-0 pb-2 mx-4">
-            <table class="table table-borderless">
-              <tbody>
-                  <tr>
-                      <td><strong>Created:</strong></td>
-                      <td>{{ alert.timestamp|date:"F j, Y H:i" }}</td>
-                  </tr>
-                  <tr>
-                      <td><strong>Severity:</strong></td>
+            <div class="row justify-content-center">
+              <table class="table table-borderless w-90">
+                <tbody>
+                    <tr>
+                        <td><strong>Created:</strong></td>
+                        <td>{{ alert.timestamp|date:"F j, Y H:i" }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Severity:</strong></td>
+                        <td>
+                          {{ alert.get_severity_display }}
+                          {% if "CRITICAL" in alert.severity %}
+                          <i class="material-icons text-danger">local_fire_department</i>
+                          {% elif "MAJOR" in alert.severity %}
+                          <i class="material-icons text-primary">bolt</i>
+                          {% elif "WARNING" in alert.severity %}
+                          <i class="material-icons text-warning">emergency</i>
+                          {% endif %} 
+                        </td>
+                    </tr>
+                    <tr>
+                      <td><strong>Status:</strong></td>
                       <td>
-                        {{ alert.get_severity_display }}
+                        {{ alert.get_status_display }}
+                        {% if "OPEN" in alert.status %}
+                        <i class="fa-solid fa-tower-broadcast 
                         {% if "CRITICAL" in alert.severity %}
-                        <i class="material-icons text-danger">local_fire_department</i>
+                        text-danger
                         {% elif "MAJOR" in alert.severity %}
-                        <i class="material-icons text-primary">bolt</i>
+                        text-primary
                         {% elif "WARNING" in alert.severity %}
-                        <i class="material-icons text-warning">emergency</i>
-                        {% endif %} 
+                        text-warning
+                        {% endif %}
+                        "></i>
+                        {% elif "ACKNOWLEDGED" in alert.status %}
+                            <i class="text-info fas fa-check-double"></i>
+                        {% elif "EXPIRED" in alert.status %}
+                            <i class="text-dark fas fa-hourglass-end"></i>
+                        {% elif "CLOSED" in alert.status %}
+                          <i class="material-icons">archive</i>
+                        {% endif %}
                       </td>
-                  </tr>
-                  <tr>
-                    <td><strong>Status:</strong></td>
-                    <td>
-                      {{ alert.get_status_display }}
-                      {% if "OPEN" in alert.status %}
-                      <i class="fa-solid fa-tower-broadcast 
-                      {% if "CRITICAL" in alert.severity %}
-                      text-danger
-                      {% elif "MAJOR" in alert.severity %}
-                      text-primary
-                      {% elif "WARNING" in alert.severity %}
-                      text-warning
-                      {% endif %}
-                      "></i>
-                      {% elif "ACKNOWLEDGED" in alert.status %}
-                          <i class="text-info fas fa-check-double"></i>
-                      {% elif "EXPIRED" in alert.status %}
-                          <i class="text-dark fas fa-hourglass-end"></i>
-                      {% elif "CLOSED" in alert.status %}
-                        <i class="material-icons">archive</i>
-                      {% endif %}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><strong>Source:</strong></td>
-                    <td>{{ alert.source }}</td>
-                  </tr>
-                  <tr>
-                      <td><strong>Message:</strong></td>
-                      <td>{{ alert.message }}</td>
-                  </tr>
-                  <tr>
-                      <td><strong>Last Occurrence:</strong></td>
-                      <td>{{ alert.last_occurrence|date:"F j, Y H:i" }}</td>
-                  </tr>
-                  {% if alert.acknowledged_at %}
-                      <tr>
-                          <td><strong>Acknowledged At:</strong></td>
-                          <td>{{ alert.acknowledged_at|date:"F j, Y H:i" }}</td>
-                      </tr>
-                  {% endif %}
-              </tbody>
-          </table>
+                    </tr>
+                    <tr>
+                      <td><strong>Source:</strong></td>
+                      <td>{{ alert.source }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Message:</strong></td>
+                        <td>{{ alert.message }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Last Occurrence:</strong></td>
+                        <td>{{ alert.last_occurrence|date:"F j, Y H:i" }}</td>
+                    </tr>
+                    {% if alert.acknowledged_at %}
+                        <tr>
+                            <td><strong>Acknowledged At:</strong></td>
+                            <td>{{ alert.acknowledged_at|date:"F j, Y H:i" }}</td>
+                        </tr>
+                    {% endif %}
+                    <tr>
+                      <td colspan="2">
+                        {% csrf_token %}
+                        <div class="input-group input-group-outline my-3">
+                          <textarea id="notes" name="notes" rows="5" class="form-control">{{ alert.notes|default:"" }}</textarea>
+                        </div>
+                      </td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
           <div class="card-footer text-muted d-flex justify-content-center">
             <button class="{% if "ACKNOWLEDGED" in alert.status %}btn btn-info
@@ -132,5 +142,47 @@
 
 {% block extrascripts %}
 <!-- Include the dashboard.js file -->
-<script src="{% static 'js/custom.js' %}"></script>
+<script src="{% static 'js/dashboard.js' %}"></script>
+
+<!-- Include lodash -->
+<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const notesTextarea = document.getElementById('notes');
+
+    // Debounce the input event
+    const debouncedSave = _.debounce(function (updatedNotes) {
+        // Send an AJAX request to the server for auto-save
+        fetch('/viz/autosave_notes/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                'alert_id': '{{ alert.id }}',
+                'notes': updatedNotes,
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Auto-save successful:', data);
+        })
+        .catch(error => {
+            console.error('Auto-save error:', error);
+        });
+    }, 3000); // Adjust the debounce time (in milliseconds) as needed
+
+    // Attach input event listener to the textarea
+    notesTextarea.addEventListener('input', function () {
+        // Get the updated notes content
+        const updatedNotes = notesTextarea.value;
+
+        // Call the debounced function
+        debouncedSave(updatedNotes);
+    });
+});
+</script>
+
 {% endblock extrascripts%}
