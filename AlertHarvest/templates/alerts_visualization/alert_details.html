@@ -98,7 +98,9 @@
                         <div class="input-group input-group-outline my-3">
                           <textarea id="notes" name="notes" rows="5" class="form-control">{{ alert.notes|default:"" }}</textarea>
                         </div>
+                        <div id="save-status" class="text-muted text-sm"></div>
                       </td>
+                      
                     </tr>
                 </tbody>
               </table>
@@ -150,6 +152,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const notesTextarea = document.getElementById('notes');
+    const saveStatusElement = document.getElementById('save-status'); // Reference to save status element
 
     // Debounce the input event
     const debouncedSave = _.debounce(function (updatedNotes) {
@@ -168,6 +171,10 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(response => response.json())
         .then(data => {
             console.log('Auto-save successful:', data);
+
+            // Display save status
+            const timestamp = new Date().toLocaleTimeString();
+            saveStatusElement.textContent = 'Notes saved: ' + timestamp;
         })
         .catch(error => {
             console.error('Auto-save error:', error);
