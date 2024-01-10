@@ -88,14 +88,6 @@
             </a>
           </li>
         </ul>
-        <div class="sidenav-footer position-absolute w-100 bottom-0">
-          <div class="mx-3">
-              <form method="post" action="{% url 'viz:logout' %}">
-                  {% csrf_token %}
-                  <button class="btn btn-outline-danger mt-4 w-100" type="submit">Logout</button>
-              </form>
-          </div>
-        </div>
       </div>
     </aside>
 
@@ -116,6 +108,37 @@
             <ul class="navbar-nav justify-content-end">
               {% block ExtraTopBar %}
               {% endblock ExtraTopBar %}
+              <li class="nav-item d-flex align-items-center mx-3 dropdown">
+                <a href="javascript:;" class="nav-link" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fa fa-user me-sm-1"></i>
+                  <span class="d-sm-inline d-none">{{ user.email }}</span>
+                </a>
+                <ul class="dropdown-menu  dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                  <li class="mb-2">
+                    <a class="dropdown-item border-radius-md" href="{% url 'viz:password_change' %}">
+                      <div class="d-flex py-1">
+                        <div class="d-flex flex-column justify-content-center align-items-center">
+                          
+                          <h6 class="text-sm font-weight-normal mb-1 d-flex align-items-center">
+                            <i class="material-icons mx-1">key</i>
+                            <span class="font-weight-bold">Change Password</span>
+                          </h6>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                  <li class="mb-2">
+                      <form method="post" action="{% url 'viz:logout' %}">
+                          {% csrf_token %}
+                          <button class="dropdown-item border-radius-md" type="submit">
+                            <h6 class="text-sm text-danger font-weight-bold mb-1 d-flex align-items-center">
+                              <i class="material-icons mx-1">logout</i>
+                              <span>Logout</span>
+                            </h6></button>
+                      </form>
+                  </li>
+                </ul>
+              </li>
               <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
                 <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
                   <div class="sidenav-toggler-inner">
@@ -140,10 +163,8 @@
     </main>
 
       <!--   Core JS Files   -->
-
-      <!-- Include Chart.js -->
       <script src={% static 'js/plugins/chartjs.min.js'%} ></script>
-      <script src={% static 'js/core/popper.min.js'%} ></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
       <script src={% static 'js/core/bootstrap.min.js'%} ></script>
       <script src={% static 'js/plugins/perfect-scrollbar.min.js'%} ></script>
       <script src={% static 'js/plugins/smooth-scrollbar.min.js'%} ></script>
