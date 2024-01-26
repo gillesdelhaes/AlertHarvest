@@ -10,7 +10,7 @@ services:
     ports:
       - 8000:8000
     volumes:
-      - ./AlertHarvest:/app
+      - ./AlertHarvest:/app:z
     container_name: django-alertharvest
     depends_on:
       - redis

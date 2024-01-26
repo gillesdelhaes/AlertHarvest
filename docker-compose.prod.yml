@@ -4,8 +4,8 @@ services:
   django_gunicorn:
     container_name: django_gunicorn
     volumes:
-      - ./AlertHarvest/static:/static
-      - ./AlertHarvest:/app
+      - ./AlertHarvest/static:/static:z
+      - ./AlertHarvest:/app:z
     env_file:
       - .env.prod
     build:
@@ -23,7 +23,7 @@ services:
       context: ./nginx
       dockerfile: Dockerfile
     volumes:
-      - ./AlertHarvest/static:/static
+      - ./AlertHarvest/static:/static:z
     ports:
       - "80:80"
     depends_on:
