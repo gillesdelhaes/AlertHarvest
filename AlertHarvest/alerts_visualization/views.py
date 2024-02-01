@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Count, Q
 from django.utils import timezone
+from django.db import models
 from django.db.models.functions import TruncDate
 from alerts_api.models import Alert
 from datetime import datetime, timedelta
@@ -26,8 +27,9 @@ def alerts_dashboard(request):
     #Refresh expired flag for all alerts
     update_expired_status()
     
-    #All Alerts not closed
-    alerts = Alert.objects.exclude(status="CLOSED").order_by('status', 'last_occurrence', 'location', 'severity', 'source', 'message')
+    #All Alerts not closed or blacked out
+    alerts = Alert.objects.filter(~models.Q(status="CLOSED") & ~models.Q(blackout=True)).order_by('status', 'last_occurrence', 'location', 'severity', 'source', 'message')
+    
     sorted_alerts = sorted(alerts, key=lambda x: (
         x.status != 'OPEN',  # Put 'OPEN' status first
         x.status != 'ACKNOWLEDGED',  # Then 'ACKNOWLEDGED'
@@ -38,28 +40,21 @@ def alerts_dashboard(request):
         x.last_occurrence,  # Finally, sort by last_occurrence
     ))  
     
-    critical_open_count = Alert.objects.filter(severity="CRITICAL", status="OPEN").count()
-    major_open_count = Alert.objects.filter(severity="MAJOR", status="OPEN").count()
-    warning_open_count = Alert.objects.filter(severity="WARNING", status="OPEN").count()
-    acknowledged_count = Alert.objects.filter(status="ACKNOWLEDGED").count()
-    expired_count = Alert.objects.filter(status="EXPIRED").count()
-    
-     # Calculate the date 30 days ago from today
-    thirty_days_ago = timezone.now() - timedelta(days=30)
-
-    # Count new tickets created per day for the past 30 days
-    new_tickets_per_day = (
-        Alert.objects.filter(timestamp__gte=thirty_days_ago)
-        .annotate(date=TruncDate('timestamp'))
-        .values('date')
-        .annotate(new_tickets_count=Count('id'))
-        .order_by('date')
+    # Count occurrences using aggregate function on the queryset
+    alert_counts = alerts.aggregate(
+        critical_open_count=models.Count('pk', filter=models.Q(severity="CRITICAL", status="OPEN")),
+        major_open_count=models.Count('pk', filter=models.Q(severity="MAJOR", status="OPEN")),
+        warning_open_count=models.Count('pk', filter=models.Q(severity="WARNING", status="OPEN")),
+        acknowledged_count=models.Count('pk', filter=models.Q(status="ACKNOWLEDGED")),
+        expired_count=models.Count('pk', filter=models.Q(status="EXPIRED"))
     )
 
-    # Extract counts and dates for chart data
-    thirtyday_chart_labels = [entry['date'] for entry in new_tickets_per_day]
-    thirtyday_chart_labels_formatted = [date_obj.strftime('%Y-%m-%d') for date_obj in thirtyday_chart_labels]
-    thirtyday_chart_data = [entry['new_tickets_count'] for entry in new_tickets_per_day]
+    # Retrieve counts from the aggregate result
+    critical_open_count = alert_counts['critical_open_count']
+    major_open_count = alert_counts['major_open_count']
+    warning_open_count = alert_counts['warning_open_count']
+    acknowledged_count = alert_counts['acknowledged_count']
+    expired_count = alert_counts['expired_count']
     
     #Created context dict
     context = { 'alerts': sorted_alerts,
@@ -68,8 +63,6 @@ def alerts_dashboard(request):
                 'warning_count': warning_open_count,
                 'acknowledged_count': acknowledged_count,
                 'expired_count': expired_count,
-                'thirtyday_chart_labels': thirtyday_chart_labels_formatted,
-                'thirtyday_chart_data':thirtyday_chart_data
                 }
     return render(request, 'alerts_visualization/dashboard.html', context)
 

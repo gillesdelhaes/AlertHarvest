@@ -3,18 +3,38 @@ from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-from .models import Alert
+from django.conf import settings
+
+from .models import Alert, BlackoutRule
+
 import json
 from datetime import datetime
+from django.utils import timezone as django_timezone
 
-from django.conf import settings
 from alerts_notificator.notifications import send_notification
+
+def is_alert_blackout(alert_data):
+    blackout_rules = BlackoutRule.objects.all()
+
+    # Convert the timestamp to an offset-aware datetime
+    alert_timestamp_naive = datetime.strptime(alert_data['timestamp'], "%Y-%m-%dT%H:%M:%S.%f")
+    alert_timestamp_aware = django_timezone.make_aware(alert_timestamp_naive, timezone=django_timezone.get_current_timezone())
+
+    for rule in blackout_rules:
+        if (not rule.source or rule.source == alert_data['source']) and \
+           (not rule.location or rule.location == alert_data['location']) and \
+           (not rule.message_contains_word or rule.message_contains_word in alert_data['message']) and \
+           (rule.start_date <= alert_timestamp_aware <= rule.end_date):
+            return True
+
+    return False
 
 @csrf_exempt
 @require_http_methods(["POST"])
 def create_alert(request):
     try:
         data = json.loads(request.body)
+        
         alert, created = Alert.objects.get_or_create(
             location=data['location'],
             severity=data['severity'],
@@ -28,11 +48,14 @@ def create_alert(request):
         if alert.status == "CLOSED":
             alert.status = "OPEN"
 
+        #Check if alert falls into blackout period
+        alert.blackout = is_alert_blackout(data)
+        
         # Save alert properties to DB
         alert.save()
         
         # Send Alert recepit notification
-        if settings.NOTIFICATION_ENABLED:
+        if settings.NOTIFICATION_ENABLED and not alert.blackout:
             send_notification(alert.id)
 
         if created:
