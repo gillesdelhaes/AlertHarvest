@@ -1,51 +1,21 @@
 [
-    {
-        "source": "Any",
-        "location": "Demo",
-        "severity": "Any",
-        "targets": ["discord"]
+  {
+    "source": "Any",
+    "location": "Any",
+    "severity": "Any",
+    "targets": [
+      {
+        "name": "email",
+        "additional_params": { "to_email": "target1@example.mail"}
       },
-    {
-      "source": "System",
-      "location": "Server Room",
-      "severity": "CRITICAL",
-      "targets": ["email", "slack"]
-    },
-    {
-      "source": "Application",
-      "location": "Production",
-      "severity": "WARNING",
-      "targets": ["discord"]
-    },
-    {
-      "source": "Network",
-      "location": "Data Center",
-      "severity": "CRITICAL",
-      "targets": ["email", "slack"]
-    },
-    {
-      "source": "Database",
-      "location": "Backup Server",
-      "severity": "MAJOR",
-      "targets": ["discord", "slack"]
-    },
-    {
-      "source": "Application",
-      "location": "Testing",
-      "severity": "MAJOR",
-      "targets": ["email"]
-    },
-    {
-        "source": "Any",
-        "location": "Testing",
-        "severity": "Any",
-        "targets": ["email","slack","discord","flyingpigeon"]
+      {
+        "name": "email",
+        "additional_params": { "to_email": "target2@example.mail"}
       },
-    {
-      "source": "Any",
-      "location": "Any",
-      "severity": "Any",
-      "targets": ["email"]
-    }
-  ]
+      {
+        "name": "discord"
+      }
+    ]
+  }
+]
   
