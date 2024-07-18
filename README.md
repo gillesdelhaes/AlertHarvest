@@ -37,7 +37,7 @@ To deploy this project using django's built-in web server (DEV ONLY)
 ```bash
   docker-compose -f docker-compose.dev.yml up -d
 ```
-Once the deployment is successful, you can access the dashboard at [http://127.0.0.1:8000/viz/login/](http://127.0.0.1:8000/viz/login/) for dev and without :8000 for prod.
+Once the deployment is successful, you can access the dashboard at [http://127.0.0.1:8000](http://127.0.0.1:8000) for dev and without :8000 for prod.
 
 Django authentication system is activated. 
 
