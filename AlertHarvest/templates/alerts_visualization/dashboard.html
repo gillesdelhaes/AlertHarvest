@@ -199,7 +199,14 @@
 
                     <td class="align-middle text-center text-sm">
                         <a class="text-dark" href="{% url 'viz:alert_details' alert.id %}">
-                            <p class="text-sm font-weight-bold mb-0">{{ alert.message|truncatechars:100 }}</p>
+                            <div class="d-flex align-items-center justify-content-center">
+                                {% if alert.pinned %}
+                                    <i class="material-icons mb-2">star</i>
+                                {% endif %}
+                                <p class="text-sm font-weight-bold mb-1">
+                                    {{ alert.message|truncatechars:100 }}
+                                </p>
+                            </div>
                         </a>
                     </td>
                     <td class="align-middle text-dark text-center text-sm">

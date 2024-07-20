@@ -24,6 +24,7 @@ class Alert(models.Model):
     last_occurrence = models.DateTimeField(blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
     blackout = models.BooleanField(default=False)
+    pinned = models.BooleanField(default=False)
     
     def __str__(self):
         return f"{self.location} - {self.severity} - {self.message}"

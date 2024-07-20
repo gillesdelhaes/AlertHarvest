@@ -25,8 +25,17 @@
             bg-warning
             {% endif %}
             ">
-              <h5 class="text-white text-capitalize ps-3 no-wrap">
-                {{ alert.location }} - {{ alert.message|truncatechars:50 }} 
+              <h5 class="text-white text-capitalize ps-3 no-wrap d-flex align-items-center">
+                {% if alert.pinned %}
+                  <a href="javascript:void(0);" class="text-white ms-2" onclick="unpinAlert({{ alert.id }})">
+                    <i class="material-icons" style="font-size: 1.5em;">star</i>
+                  </a>
+                {% else %}
+                  <a href="javascript:void(0);" class="text-white ms-2" onclick="pinAlert({{ alert.id }})">
+                    <i class="material-icons" style="font-size: 1.5em;">star_border</i>
+                  </a>
+                {% endif %}
+                <span class="ms-2 mb-1">{{ alert.location }} - {{ alert.message|truncatechars:50 }}</span>
               </h5>
             </div>
           </div>

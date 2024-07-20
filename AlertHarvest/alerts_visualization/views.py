@@ -28,9 +28,10 @@ def alerts_dashboard(request):
     update_expired_status()
     
     #All Alerts not closed or blacked out
-    alerts = Alert.objects.filter(~models.Q(status="CLOSED") & ~models.Q(blackout=True)).order_by('status', 'last_occurrence', 'location', 'severity', 'source', 'message')
+    alerts = Alert.objects.filter(~models.Q(status="CLOSED") & ~models.Q(blackout=True)).order_by('pinned', 'status', 'last_occurrence', 'location', 'severity', 'source', 'message')
     
     sorted_alerts = sorted(alerts, key=lambda x: (
+        not x.pinned,  # Pinned alerts first
         x.status != 'OPEN',  # Put 'OPEN' status first
         x.status != 'ACKNOWLEDGED',  # Then 'ACKNOWLEDGED'
         x.status != 'EXPIRED',  # Then 'EXPIRED'
@@ -38,7 +39,7 @@ def alerts_dashboard(request):
         x.severity != 'MAJOR',  # Then 'MAJOR' severity
         x.severity != 'WARNING',  # Then 'WARNING' severity
         x.last_occurrence,  # Finally, sort by last_occurrence
-    ))  
+    ))
     
     # Count occurrences using aggregate function on the queryset
     alert_counts = alerts.aggregate(

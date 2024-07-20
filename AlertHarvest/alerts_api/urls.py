@@ -9,4 +9,6 @@ urlpatterns = [
     path('acknowledge_alert/<int:alert_id>/', views.acknowledge_alert, name='acknowledge_alert'),
     path('acknowledge_alerts_bulk/', views.acknowledge_alerts_bulk, name='acknowledge_alerts_bulk'),
     path('unacknowledge_alert/<int:alert_id>/', views.unacknowledge_alert, name='unacknowledge_alert'),
+    path('pin_alert/<int:alert_id>/', views.pin_alert, name='pin_alert'),
+    path('unpin_alert/<int:alert_id>/', views.unpin_alert, name='unpin_alert'),
 ]

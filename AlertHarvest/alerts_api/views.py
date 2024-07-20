@@ -168,3 +168,31 @@ def unacknowledge_alert(request, alert_id):
     except Exception as e:
         # Return an error response with details
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+@csrf_exempt
+@require_http_methods(["PUT"])
+def pin_alert(request, alert_id):
+    try:
+        alert = get_object_or_404(Alert, id=alert_id)
+        alert.pinned = True
+        alert.save()
+
+        # Return success response
+        return JsonResponse({'status': 'success', 'message': 'Alert pinned successfully'})
+    except Exception as e:
+        # Return an error response with details
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+    
+@csrf_exempt
+@require_http_methods(["PUT"])
+def unpin_alert(request, alert_id):
+    try:
+        alert = get_object_or_404(Alert, id=alert_id)
+        alert.pinned = False
+        alert.save()
+
+        # Return success response
+        return JsonResponse({'status': 'success', 'message': 'Alert unpinned successfully'})
+    except Exception as e:
+        # Return an error response with details
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
