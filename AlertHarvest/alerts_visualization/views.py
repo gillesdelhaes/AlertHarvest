@@ -1,15 +1,16 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Count, Q
 from django.utils import timezone
 from django.db import models
 from django.db.models.functions import TruncDate
-from alerts_api.models import Alert
+from alerts_api.models import Alert, BlackoutRule
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import json
+from .forms import BlackoutRuleForm
 
 def update_expired_status():
     now = datetime.now()
@@ -175,3 +176,35 @@ def auto_save_notes(request):
         return JsonResponse({'status': 'success', 'message': 'Auto-save successful'})
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+@login_required    
+def blackout_rules(request):
+    rules = BlackoutRule.objects.all().order_by('-start_date')
+    
+    # Compute the current time
+    current_time = timezone.now()
+
+    # Annotate each rule with a status
+    for rule in rules:
+        if rule.end_date < current_time and rule.start_date < current_time:
+            rule.status_icon = 'expired'
+        elif rule.start_date <= current_time and current_time <= rule.end_date:
+            rule.status_icon = "active"
+        elif rule.start_date > current_time and rule.end_date > current_time:
+            rule.status_icon = "upcoming"
+        else:
+            rule.status_icon = "invalid"
+    
+    return render(request, 'alerts_visualization/blackout_rules.html', {'rules': rules})
+
+@login_required
+def create_blackout_rule(request):
+    if request.method == 'POST':
+        form = BlackoutRuleForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('viz:blackout_rules')  # Redirect to a page that lists blackout rules
+    else:
+        form = BlackoutRuleForm()
+
+    return render(request, 'alerts_visualization/create_blackout_rule.html', {'form': form})

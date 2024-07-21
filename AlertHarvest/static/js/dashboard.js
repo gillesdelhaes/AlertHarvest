@@ -235,6 +235,42 @@ function unpinAlert(alertId) {
     });
 }
 
+// POTENTIALLY TO MOVE TO OWN FILE
+// Function to handle bulk acknowledgment
+function deleteSelectedBlackouts() {
+    var selectedAlerts = getSelectedAlerts();
+    
+    // Prepare the JSON data with selected alert IDs
+    const requestData = {
+        rule_ids: selectedAlerts
+    };
+
+    // Send a PUT request using jQuery Ajax
+    $.ajax({
+        type: 'PUT',
+        url: '/api/delete_blackout_bulk/',
+        contentType: 'application/json',
+        data: JSON.stringify(requestData),
+        success: function (response) {
+            // Handle success response
+            console.log(response);
+            // Optionally update the UI or perform other actions on success
+
+            // Refresh the page after a short delay (e.g., 500 milliseconds)
+            setTimeout(function () {
+                location.reload();
+            }, 500);
+        },
+        error: function (error) {
+            // Handle error response
+            console.error(error);
+            // Optionally show an error message or perform other actions on error
+        }
+    });
+    console.log("Acknowledge selected alerts:", selectedAlerts);
+}
+
+
 //Search Function
 document.addEventListener("DOMContentLoaded", function() {
     var searchInput = document.getElementById("searchInput");
@@ -310,3 +346,4 @@ document.addEventListener('DOMContentLoaded', function () {
     // Initial setup based on the default value
     handleRefreshChange();
 });
+

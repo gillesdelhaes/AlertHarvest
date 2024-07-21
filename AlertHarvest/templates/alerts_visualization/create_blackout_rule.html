@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a class="text-dark text-muted" href="{% url 'viz:blackout_rules' %}">Blackout Rules</a></li>
+<li class="breadcrumb-item text-sm text-dark active" aria-current="page">Create Blackout Rule</li>
+{% endblock breadcrumb %}
+
+{% block ExtraTopBar %}
+{% endblock ExtraTopBar %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card my-4">
+                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <div class="bg-dark border-radius-lg pt-4 pb-3">
+                        <h6 class="text-white text-capitalize ps-3">Create Blackout Rule</h6>
+                    </div>
+                </div>
+                <div class="card-body px-5 pb-5">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger text-light text-bold">
+                            {{ form.non_field_errors }}
+                        </div>
+                        {% endif %}
+
+                        <div class="row mb-3">
+                            <label for="id_source" class="col-sm-2 col-form-label text-bold">Source</label>
+                            <div class="col-sm-10">
+                                {{ form.source }}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="id_location" class="col-sm-2 col-form-label text-bold">Location</label>
+                            <div class="col-sm-10">
+                                {{ form.location }}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="id_message_contains_word" class="col-sm-2 col-form-label text-bold">Message Contains</label>
+                            <div class="col-sm-10">
+                                {{ form.message_contains_word }}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="id_start_date" class="col-sm-2 col-form-label text-bold">Start Date</label>
+                            <div class="col-sm-10">
+                                {{ form.start_date }}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="id_end_date" class="col-sm-2 col-form-label text-bold">End Date</label>
+                            <div class="col-sm-10">
+                                {{ form.end_date }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-10 offset-sm-2">
+                                <button type="submit" class="btn btn-dark">Create</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extrascripts %}
+<!-- Include the custom.js file -->
+<script src="{% static 'js/dashboard.js' %}"></script>
+{% endblock extrascripts %}

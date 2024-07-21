@@ -196,3 +196,24 @@ def unpin_alert(request, alert_id):
     except Exception as e:
         # Return an error response with details
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+@csrf_exempt
+@require_http_methods(["PUT"])
+def delete_blackout_bulk(request):
+    try:
+        data = json.loads(request.body)
+        rule_ids = data.get('rule_ids', None)
+
+        if not rule_ids or not isinstance(rule_ids, list):
+            raise ValueError('Invalid or missing "rule_ids" in the request body')
+
+        # Iterate over the list of rule IDs and delete each relevant rule
+        for rule_id in rule_ids:
+            rule = get_object_or_404(BlackoutRule, id=rule_id)
+            rule.delete()
+
+        # Return success response
+        return JsonResponse({'status': 'success', 'message': 'Blackout rules deleted successfully'})
+    except Exception as e:
+        # Return an error response with details
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)

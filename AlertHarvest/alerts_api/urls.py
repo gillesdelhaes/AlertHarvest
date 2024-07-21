@@ -11,4 +11,5 @@ urlpatterns = [
     path('unacknowledge_alert/<int:alert_id>/', views.unacknowledge_alert, name='unacknowledge_alert'),
     path('pin_alert/<int:alert_id>/', views.pin_alert, name='pin_alert'),
     path('unpin_alert/<int:alert_id>/', views.unpin_alert, name='unpin_alert'),
+    path('delete_blackout_bulk/', views.delete_blackout_bulk, name='delete_blackout_bulk'),
 ]

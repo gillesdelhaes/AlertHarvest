@@ -16,4 +16,6 @@ urlpatterns = [
         template_name="accounts/password_change_done.html"
     ), name="password_change_done"),
     path('autosave_notes/', views.auto_save_notes, name='auto_save_notes'),
+    path('blackout_rules/', views.blackout_rules, name='blackout_rules'),
+    path('create_blackout_rule/', views.create_blackout_rule, name='create_blackout_rule'),
 ]
