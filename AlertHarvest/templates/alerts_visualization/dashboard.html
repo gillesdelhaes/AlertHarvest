@@ -166,7 +166,7 @@
                     </td>
                     <td class="align-middle text-center text-sm">
                             {% if "OPEN" in alert.status %}
-                                <i class="fa-solid fa-tower-broadcast 
+                                <i class="material-icons
                                 {% if "CRITICAL" in alert.severity %}
                                 text-danger
                                 {% elif "MAJOR" in alert.severity %}
@@ -174,7 +174,7 @@
                                 {% elif "WARNING" in alert.severity %}
                                 text-warning
                                 {% endif %}
-                                "></i>
+                                ">cell_tower</i>
                             {% elif "ACKNOWLEDGED" in alert.status %}
                                 <i class="text-info fas fa-check-double"></i>
                             {% else %}
