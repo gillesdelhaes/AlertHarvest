@@ -22,5 +22,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(('alerts_api.urls', 'api'))),
     path('viz/', include(('alerts_visualization.urls', 'viz'))),  # 2-tuple syntax with app_name
-    path('', lambda request: redirect('viz/dashboard/', permanent=True))
+    path('', lambda request: redirect('viz/dashboard/', permanent=True)),
+    path("health/", include(("healthcheck.urls", 'health'))),
 ]
