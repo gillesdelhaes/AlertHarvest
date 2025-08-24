@@ -29,17 +29,17 @@ For support and contribution join our [discord](https://discord.gg/hduVhv7VaA)
 To deploy the project
 
 ```bash
-  docker-compose -f docker-compose.prod.yml up -d
+  make up ENV=prod
 ```
 
 To deploy this project using django's built-in web server (DEV ONLY)
 
 ```bash
-  docker-compose -f docker-compose.dev.yml up -d
+  make up
 ```
-Once the deployment is successful, you can access the dashboard at [http://127.0.0.1:8000](http://127.0.0.1:8000) for dev and without :8000 for prod.
+Once the deployment is successful, you can access the dashboard at [http://127.0.0.1:8000](http://127.0.0.1:8000) for dev and :80 for prod.
 
-Django authentication system is activated. 
+Django built-in authentication system is activated. 
 
 Credentials can be found in respective .env files.
 
