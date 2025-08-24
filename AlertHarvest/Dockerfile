@@ -11,15 +11,10 @@ WORKDIR /app
 COPY . /app
 
 # Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.prod.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Install any needed extra packages specified in notification_config/notifiation_requirements.txt
 RUN pip install --no-cache-dir -r notification_config/notification_requirements.txt
 
-# # Make port 8000 available to the world outside this container
-# EXPOSE 8000
-
-# # Run the Django development server and Celery worker
-# CMD ["bash", "-c", "python manage.py runserver 0.0.0.0:8000 & celery -A AlertHarvest worker --loglevel=debug"]
-
-ENTRYPOINT ["sh", "entrypoint.prod.sh"]
+# Define entry point
+ENTRYPOINT ["sh", "entrypoint.sh"]

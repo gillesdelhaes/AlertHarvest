@@ -1,24 +1,48 @@
-version: '1'
 services:
   django:
     build:
       context: ./AlertHarvest
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     image: alertharvest-dev:latest
     env_file:
       - .env.dev
     ports:
-      - 8000:8000
+      - "8000:8000"
     volumes:
       - ./AlertHarvest:/app:z
     container_name: django-alertharvest
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
+    command: python manage.py runserver 0.0.0.0:8000&
     networks:
       - AlertHarvest
   redis:
     image: "redis:latest"
     container_name: redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+    networks:
+      - AlertHarvest
+  worker:
+    build:
+      context: ./AlertHarvest
+      dockerfile: Dockerfile
+    image: alertharvest-worker:latest
+    container_name: celery-worker
+    env_file:
+      - .env.dev
+    depends_on:
+      django:
+        condition: service_started
+      redis:
+        condition: service_healthy
+    command: celery -A AlertHarvest worker --loglevel=DEBUG
+    volumes:
+      - ./AlertHarvest:/app:z
     networks:
       - AlertHarvest
 

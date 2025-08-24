@@ -1,3 +1,3 @@
-FROM nginx:1.24.0
+FROM nginx:stable-alpine
 
 COPY ./default.conf /etc/nginx/conf.d/default.conf

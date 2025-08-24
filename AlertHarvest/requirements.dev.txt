@@ -1,3 +1,0 @@
-Django==5.0
-celery[redis]
-gunicorn==21.2.0

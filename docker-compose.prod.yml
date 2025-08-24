@@ -1,5 +1,3 @@
-version: '1'
-
 services:
   django_gunicorn:
     container_name: django_gunicorn
@@ -10,10 +8,12 @@ services:
       - .env.prod
     build:
       context: ./AlertHarvest
-      dockerfile: Dockerfile.prod
+      dockerfile: Dockerfile
     image: alertharvest-prod:latest
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
+    command: gunicorn AlertHarvest.wsgi:application --bind 0.0.0.0:8000
     networks:
       - AlertHarvest
   
@@ -27,15 +27,41 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - django_gunicorn
+      django_gunicorn:
+        condition: service_started
+
     networks:
       - AlertHarvest  
   
   redis:
     image: "redis:latest"
     container_name: redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 15
     networks:
       - AlertHarvest
+
+  worker:
+      build:
+        context: ./AlertHarvest
+        dockerfile: Dockerfile
+      image: alertharvest-worker:latest
+      container_name: celery-worker
+      env_file:
+        - .env.prod
+      depends_on:
+        django_gunicorn:
+          condition: service_started
+        redis:
+          condition: service_healthy
+      command: celery -A AlertHarvest worker --loglevel=INFO
+      volumes:
+        - ./AlertHarvest:/app:z
+      networks:
+        - AlertHarvest
 
 # Create the "monitoring" network if it doesn't exist
 networks:
