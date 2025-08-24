@@ -11,6 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import json
 from .forms import BlackoutRuleForm
+from healthcheck.utils import get_system_health
 
 def update_expired_status():
     now = datetime.now()
@@ -208,3 +209,14 @@ def create_blackout_rule(request):
         form = BlackoutRuleForm()
 
     return render(request, 'alerts_visualization/create_blackout_rule.html', {'form': form})
+
+@login_required
+def system_health(request):
+    data = get_system_health()
+    status = 'OK' if all(v == 'OK' for v in data.values()) else 'DOWN'
+
+    context = {
+        'status': status,
+        'data': data,
+    }
+    return render(request, 'alerts_visualization/system_health.html', context)
