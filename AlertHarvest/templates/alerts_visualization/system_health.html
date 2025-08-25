@@ -1,9 +1,12 @@
 <!-- alerts_visualization/templates/alerts_visualization/system_health.html -->
 {% extends "base.html" %}
 
+{% block breadcrumb %}
+<li class="breadcrumb-item text-sm text-dark active" aria-current="page">System Health</li>
+{% endblock breadcrumb %}
+
 {% block content %}
 <div class="container mt-4">
-    <h2>System Health</h2>
     {% if error %}
         <div class="alert alert-danger">Error contacting health endpoint: {{ error }}</div>
     {% endif %}

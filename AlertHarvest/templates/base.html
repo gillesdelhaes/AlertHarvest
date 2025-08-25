@@ -78,6 +78,15 @@
           </li>
 
           <li class="nav-item">
+            <a class="nav-link text-white {% if request.resolver_match.view_name == 'viz:system_health' %}bg-gradient-secondary{% endif %}" href="{% url 'viz:system_health' %}">
+                <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                  <i class="material-icons opacity-10">monitor_heart</i>
+                </div>
+              <span class="nav-link-text ms-1">System Health</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
             <a class="nav-link text-white {% if request.resolver_match.view_name == 'viz:blackout_ules' %}bg-gradient-secondary{% endif %}" href="{% url 'viz:blackout_rules' %}">
                 <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                   <i class="material-icons opacity-10">event</i>
