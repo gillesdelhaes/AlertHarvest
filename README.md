@@ -24,6 +24,16 @@ For support and contribution join our [discord](https://discord.gg/hduVhv7VaA)
 **Automation**
 - ![Docker](https://img.shields.io/badge/Docker-blue?logo=docker)
 
+**MCP SERVER**
+Checkout out our new MCP server and control your Alert Harvest instance with AI !
+https://github.com/gillesdelhaes/alertharvest-mcp-server
+
+## Easy docker pull deployment
+
+```bash
+   docker-compose -f docker-compose.hub.yml up -d 
+```
+
 ## Deployment
 
 To deploy the project

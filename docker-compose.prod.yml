@@ -9,7 +9,7 @@ services:
     build:
       context: ./AlertHarvest
       dockerfile: Dockerfile
-    image: alertharvest-prod:latest
+    image: lakzor/alertharvest:app
     depends_on:
       redis:
         condition: service_healthy
@@ -24,6 +24,7 @@ services:
     build: 
       context: ./nginx
       dockerfile: Dockerfile
+    image: lakzor/alertharvest:nginx
     volumes:
       - ./AlertHarvest/static:/static:z
     ports:
@@ -50,7 +51,7 @@ services:
       build:
         context: ./AlertHarvest
         dockerfile: Dockerfile
-      image: alertharvest-worker:latest
+      image: lakzor/alertharvest:worker
       container_name: celery-worker
       env_file:
         - .env.prod

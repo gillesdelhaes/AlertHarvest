@@ -1,0 +1,65 @@
+services:
+  django_gunicorn:
+    container_name: django_gunicorn
+    image: lakzor/alertharvest:app
+    volumes:
+      - alertharvest-static:/static:z
+    env_file:
+      - .env.prod
+    depends_on:
+      redis:
+        condition: service_healthy
+      worker:
+        condition: service_healthy
+    command: gunicorn AlertHarvest.wsgi:application --bind 0.0.0.0:8000
+    networks:
+      - AlertHarvest
+  
+  nginx:
+    container_name: nginx
+    image: lakzor/alertharvest:nginx
+    volumes:
+      - alertharvest-static:/static:z
+    ports:
+      - "80:80"
+    depends_on:
+      django_gunicorn:
+        condition: service_started
+    networks:
+      - AlertHarvest  
+  
+  redis:
+    image: "redis:latest"
+    container_name: redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+    networks:
+      - AlertHarvest
+
+  worker:
+    image: lakzor/alertharvest:worker
+    container_name: celery-worker
+    env_file:
+      - .env.prod
+    depends_on:
+      redis:
+        condition: service_healthy
+    command: celery -A AlertHarvest worker --loglevel=INFO
+    healthcheck:
+      test: ["CMD", "celery", "-A", "AlertHarvest", "inspect", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - AlertHarvest
+
+volumes:
+  alertharvest-static:
+
+networks:
+  AlertHarvest:
+    name: AlertHarvest
+    driver: bridge
