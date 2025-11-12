@@ -12,10 +12,8 @@ services:
       - ./AlertHarvest:/app:z
     container_name: django-alertharvest
     depends_on:
-      redis:
-        condition: service_healthy
-      worker:
-        condition: service_healthy
+      - redis
+      - worker
     command: python manage.py runserver 0.0.0.0:8000&
     networks:
       - AlertHarvest
@@ -38,8 +36,7 @@ services:
     env_file:
       - .env.dev
     depends_on:
-      redis:
-        condition: service_healthy
+      - redis
     command: celery -A AlertHarvest worker --loglevel=DEBUG
     healthcheck:
       test: ["CMD", "celery", "-A", "AlertHarvest", "inspect", "ping"]

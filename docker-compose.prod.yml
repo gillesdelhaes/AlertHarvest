@@ -11,10 +11,8 @@ services:
       dockerfile: Dockerfile
     image: lakzor/alertharvest:app
     depends_on:
-      redis:
-        condition: service_healthy
-      worker:
-        condition: service_healthy
+      - redis
+      - worker
     command: gunicorn AlertHarvest.wsgi:application --bind 0.0.0.0:8000
     networks:
       - AlertHarvest
@@ -30,8 +28,7 @@ services:
     ports:
       - "80:80"
     depends_on:
-      django_gunicorn:
-        condition: service_started
+      - django_gunicorn
 
     networks:
       - AlertHarvest  
@@ -56,8 +53,7 @@ services:
       env_file:
         - .env.prod
       depends_on:
-        redis:
-          condition: service_healthy
+        - redis
       command: celery -A AlertHarvest worker --loglevel=INFO
       healthcheck:
         test: ["CMD", "celery", "-A", "AlertHarvest", "inspect", "ping"]
